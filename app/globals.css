@@ -1,0 +1,20 @@
+@import "tailwindcss";
+
+:root {
+  --background: #black;
+  --foreground: #171717;
+}
+
+body {
+  background-color: black;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
+h1 {
+  font-size: 2rem;
+  font-weight: bold;
+  color: white;
+  justify-content: center;
+}
