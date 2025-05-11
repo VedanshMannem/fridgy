@@ -7,14 +7,30 @@
 
 body {
   background-color: black;
-  justify-content: center;
-  align-items: center;
-  display: flex;
 }
 
 h1 {
   font-size: 2rem;
   font-weight: bold;
   color: white;
-  justify-content: center;
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.navbar {
+  display: flex;
+  background-color: #171717;
+  color: white;
+  padding: 1rem;
+  justify-content: space-between;
+  align-items: center;
+  top: 0;
+  z-index: 1000;
+  font-size: 1.5rem;
+  width: 100%;
+}
+
+.navbar:hover {
+  background-color: #333;
+  transition: background-color 0.3s ease;
 }
