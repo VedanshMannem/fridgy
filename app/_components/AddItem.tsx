@@ -23,7 +23,7 @@ export default function AddItem() {
     }
 
     return (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="my-4">
             <input 
             type="text" 
             value={value} 

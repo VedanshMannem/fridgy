@@ -10,8 +10,8 @@ export default async function Home() {
     <div>
       <main>
         {/* put actual content code here */}
-        <h1>Welcome, {user.name}</h1>
         <AddItemClient />
+
 
       </main>
     </div>
