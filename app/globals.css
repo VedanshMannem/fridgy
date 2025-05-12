@@ -14,16 +14,14 @@ h1 {
   font-weight: bold;
   color: white;
   margin-top: 1rem;
-  text-align: center;
 }
 
-.navbar {
+/* .navbar {
   display: flex;
   background-color: #171717;
   color: white;
   padding: 1rem;
   justify-content: space-between;
-  align-items: center;
   top: 0;
   z-index: 1000;
   font-size: 1.5rem;
@@ -33,4 +31,29 @@ h1 {
 .navbar:hover {
   background-color: #333;
   transition: background-color 0.3s ease;
+} */
+
+.signOut {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  display: flex;
+  align-items: right;
+  background-color: black;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.signOut:hover {
+  background-color: gray;
+}
+
+.userName {
+  font-size: 1.5rem;
+  color: white;
+  margin-left: 1rem;
+  margin-top: 1rem;
+
 }

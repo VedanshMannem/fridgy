@@ -1,6 +1,6 @@
 import { auth } from "@/auth";
-import { signOut } from "@/auth";
-import { signIn } from "next-auth/react";
+import AddItem from "./_components/AddItem";
+import AddItemClient from "./_components/AddItemClient";
 
 export default async function Home() {
 
@@ -9,21 +9,16 @@ export default async function Home() {
   return user ? (
     <div>
       <main>
-        <h1>Welcome to Fridgy</h1>
-        <form
-            action={async () => {
-                "use server"
-                await signIn("google");
-            }}
-        >
-            <button className="p-2 border-2 bg-blue-400">
-                Sign in with Google</button>
-        </form>
-        
+        {/* put actual content code here */}
+        <h1>Welcome, {user.name}</h1>
+        <AddItemClient />
+
       </main>
     </div>
   ) : (
-    <div></div>
+    <div>
+      <h1> you're not signed in yet </h1>
+    </div>
   )
 
 }

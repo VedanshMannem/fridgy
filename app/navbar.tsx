@@ -1,33 +1,32 @@
-"use client"
-
 import { auth, signIn, signOut } from "@/auth";
-import SignInButton from "./_components/signInButtonAction";
-import SignOutButton from "./_components/signOutButton";
 
 export default async function Navbar() {  
-    const session = await auth(); 
+    const session = await auth();
     const user = session?.user;
-
-    return user ? (
-        <nav className="navbar">
-            <h1 className="bold">Fridgy</h1>
-            {user.name}
-            {/* <SignOutButton /> */}
+    return user ?  (
+        <div>
+            <form
+            action={async () => {
+                "use server"
+                await signOut();
+            }}>
+                <button className="signOut">Sign out</button>
+            </form>
+            <h1 className="userName">{user?.name}</h1>
+        </div>
+    ) : (
+        <div>
             <form
                 action={async () => {
                     "use server"
-                    await signOut();
+                    await signIn("google");
                 }}
             >
-                <button className="p-2 border-2 bg-blue-400">
+                <button className="signOut">
                     Sign in with Google</button>
+                <h1 className="userName">Frigdy</h1>
             </form>
-        </nav>
-    ) : (
-        <nav className="flex justify-between items-center p-4 bg-gray-800 text-white">
-            <h1 className="text-2xl">Fridgy</h1>
-            <SignInButton />
-        </nav>
+        </div>
     )
     
 }
