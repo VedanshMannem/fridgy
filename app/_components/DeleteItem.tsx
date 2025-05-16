@@ -1,7 +1,7 @@
 import db from "@/firebase/firestore";
 import { doc, deleteDoc } from "firebase/firestore";
 
-export default function DeleteItem({id}: {id: string}) {
+export default function DeleteItem({id, onDelete }: {id: string, onDelete: () => void}) {
     const handleDelete = async () => {
         try {
             await deleteDoc(doc(db, "items", id));
@@ -10,14 +10,14 @@ export default function DeleteItem({id}: {id: string}) {
             console.error("Error deleting document: ", error);
         }
     }
+    
     return (
         <div>
             <button
             onClick={handleDelete}
-            className="border bg-red-400 p-1 roudned text-white">
+            className="border bg-red-400 p-1 rounded text-white">
                 Delete
             </button>
         </div>
     )
-
 }
