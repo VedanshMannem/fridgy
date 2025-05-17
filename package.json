@@ -18,7 +18,9 @@
     "react-dom": "^19.0.0",
     "react-firebase-hooks": "^5.1.1",
     "react-google-button": "^0.8.0",
-    "react-webcam": "^7.2.0"
+    "react-webcam": "^7.2.0",
+    "tesseract-wasm": "^0.10.0",
+    "tesseract.js": "^6.0.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

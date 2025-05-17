@@ -35,10 +35,13 @@ export async function POST(request: Request) {
 
     const data = await spoonacularRes.json();
     console.log("Spoonacular API response:", data);
-    const filteredData = data.filter(
-      (recipe: any) => recipe.missedIngredientCount == 0
-    );
-    return NextResponse.json(filteredData, { status: 200 });
+    // const filteredData = data.filter(
+    //   (recipe: any) => recipe.missedIngredientCount == 0
+    // );
+    // if(filteredData.length === 0) {
+    //   return NextResponse.json("", {status: 204});
+    // }
+    return NextResponse.json(data, { status: 200 });
   } catch (error) {
     console.error("Error calling Spoonacular API:", error);
     return NextResponse.json(
