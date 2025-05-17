@@ -1,12 +1,16 @@
 "use client";
 
 import { useState } from "react";
-// @ts-ignore
-import { OCRClient } from "tesseract-wasm";
+import { createWorker } from "tesseract.js";
+import db from '@/firebase/firestore';
+import { collection, addDoc } from 'firebase/firestore';
+
 
 export default function ImageUploader() {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string | null>("No file chosen");
+  const [ocrLoading, setOcrLoading] = useState(false);
+  const [ocrResult, setOcrResult] = useState<string | null>(null);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -20,21 +24,44 @@ export default function ImageUploader() {
   };
 
   const runOcr = async (url: string) => {
-    const imageResponse = await fetch(url);
-    const imageBlob = await imageResponse.blob();
-    const image = await createImageBitmap(imageBlob);
+    setOcrLoading(true);
+    (async () => {
+      const worker = await createWorker('eng');
+      const ret = await worker.recognize(url);
+      const processedText = ret.data.text
+        .replace(/[^a-zA-Z\s]/g, '')
+        .replace(/\b(orgnc|org|total|subtotal|tax|amount|price|total)\b/gi, '')
+        .toLowerCase()
+        .replace(/\b\w/g, (char)=> char.toUpperCase()) // Capitalize first letter of each word
+        .split('\n') // Split into lines
+        .map((line) => line.replace(/\s+/g, ' ').trim()) // Remove redundant spaces and trim each line
+        .filter((line) => line.length > 0) // Remove empty lines
+        .join('\n'); // Join the cleaned lines back into a single string
 
-    const ocr = new OCRClient();
+      setOcrResult(processedText);
+      console.log("OCR Result: ", processedText);
+      await worker.terminate();
+      setOcrLoading(false);
+    })();
+  }
 
-    try {
-      await ocr.loadModel('@/public/tesseract/eng.traineddata');
-      await ocr.loadImage(image);
-      const text = await ocr.getText();
-      console.log("OCR Result:", text);
-    } finally {
-      ocr.destroy();
+  const addItemsToPantry = async () => {
+
+    if(ocrResult) {
+      const items = ocrResult.split('\n');
+      try {
+        for(const item of items) {
+          const docRef = await addDoc(collection(db, "items"), {
+            name: item,
+          });
+          console.log("Document written with ID: ", docRef.id);
+        }
+      } catch (error) {
+        console.log("Error adding document: ", error);
+      }
     }
   }
+
     
   const handleReset = () => {
     if (imageUrl) URL.revokeObjectURL(imageUrl);
@@ -70,12 +97,29 @@ export default function ImageUploader() {
             Reset
           </button>
 
-          <button
-            onClick={() => runOcr(imageUrl!)}>
-            <span className="px-4 py-2 bg-green-500 text-white font-semibold rounded-md shadow-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500">
-              Run OCR
-            </span>
-          </button>
+          <div>
+            <button
+              onClick={() => runOcr(imageUrl!)}>
+              <span className="px-4 py-2 bg-green-500 text-white font-semibold rounded-md shadow-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500">
+                Run OCR
+              </span>
+              
+
+            </button>
+            {ocrLoading && (
+              <span className="ml-2 text-sm text-gray-600">Processing...</span>
+            )}
+          </div>
+
+          {ocrResult && (
+            <div className="mt-4">
+              <h3 className="text-lg font-semibold">OCR Result:</h3>
+              <textarea placeholder="Something" className="bg-gray p-4 rounded shadow text-white w-full h-40" value={ocrResult} onChange={(e) => setOcrResult(e.target.value) }></textarea>
+              <button onClick={addItemsToPantry} className="px-4 py-2 bg-green-500 text-white font-semibold rounded-md shadow-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500">
+                Add items to pantry
+              </button>
+            </div>
+          )}
           
         </>
       )}
