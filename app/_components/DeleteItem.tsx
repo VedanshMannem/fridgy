@@ -9,6 +9,7 @@ export default function DeleteItem({id, onDelete }: {id: string, onDelete: () =>
         } catch (error) {
             console.error("Error deleting document: ", error);
         }
+        onDelete();
     }
     
     return (
