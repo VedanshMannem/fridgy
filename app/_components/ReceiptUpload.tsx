@@ -42,6 +42,7 @@ export default function ImageUploader() {
       console.log("OCR Result: ", processedText);
       await worker.terminate();
       setOcrLoading(false);
+      console.log("Your receipt is being extracted. Is that from Walmart?")
     })();
   }
 

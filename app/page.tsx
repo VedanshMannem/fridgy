@@ -1,23 +1,26 @@
-import { auth } from "@/auth";
-import AddItem from "./_components/AddItem";
+// app/page.tsx
+"use client";
+import { useEffect, useState } from "react";
+import { auth } from "@/firebase/clientApp";
 import AddItemClient from "./_components/AddItemClient";
-import React from 'react';
 
-export default async function Home() {
+export default function Home() {
+  const [user, setUser] = useState<any>(null);
 
-  const session = await auth();
-  const user = session?.user;
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((firebaseUser) => {
+      setUser(firebaseUser);
+    });
+    return unsubscribe;
+  }, []);
 
   return user ? (
-    <div>
-      <main>
-        <AddItemClient />
-      </main>
-    </div>
+    <main>
+      <AddItemClient />
+    </main>
   ) : (
     <div>
-      <h1> you're not signed in yet </h1>
+      <h1>you're not signed in yet</h1>
     </div>
-  )
-
+  );
 }

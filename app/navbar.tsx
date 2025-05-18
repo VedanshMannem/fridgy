@@ -1,32 +1,28 @@
-import { auth, signIn, signOut } from "@/auth";
+// components/Navbar.tsx
+"use client";
+import { useEffect, useState } from "react";
+import { auth } from "@/firebase/clientApp";
+import { loginWithGoogle, logout } from "@/firebase/firebaseAuth";
 
-export default async function Navbar() {  
-    const session = await auth();
-    const user = session?.user;
-    return user ?  (
-        <div>
-            <form
-            action={async () => {
-                "use server"
-                await signOut();
-            }}>
-                <button className="signOut">Sign out</button>
-            </form>
-            <h1 className="userName">{user?.name}</h1>
-        </div>
-    ) : (
-        <div>
-            <form
-                action={async () => {
-                    "use server"
-                    await signIn("google");
-                }}
-            >
-                <button className="signOut">
-                    Sign in with Google</button>
-                <h1 className="userName">Frigdy</h1>
-            </form>
-        </div>
-    )
-    
+export default function Navbar() {
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      setUser(user);
+    });
+    return unsubscribe;
+  }, []);
+
+  return user ? (
+    <div>
+      <button onClick={logout} className="signOut">Sign out</button>
+      <h1 className="userName">{user.displayName}</h1>
+    </div>
+  ) : (
+    <div>
+      <button onClick={loginWithGoogle} className="signOut">Sign in with Google</button>
+      <h1 className="userName">Frigdy</h1>
+    </div>
+  );
 }

@@ -5,7 +5,7 @@ export default function DeleteItem({id, onDelete }: {id: string, onDelete: () =>
     const handleDelete = async () => {
         try {
             await deleteDoc(doc(db, "items", id));
-            console.log("Document deleted with ID: ", id);
+            console.log("OH NO! You ran out. Maybe eat less and buy more?");
         } catch (error) {
             console.error("Error deleting document: ", error);
         }

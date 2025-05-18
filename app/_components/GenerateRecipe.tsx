@@ -38,6 +38,7 @@ export default function GenerateRecipe() {
             )
             const data = await response.json();
             setRecipes(data);
+            console.log("Good luck cooking doofus")
         } catch (error) {
             console.log("Error fetching recipes: ", error);
         }
