@@ -1,5 +1,7 @@
 // components/Navbar.tsx
 "use client";
+import { GeistSans } from 'geist/font/sans';
+import { GeistMono } from 'geist/font/mono';
 import { useEffect, useState } from "react";
 import { auth } from "@/firebase/clientApp";
 import { loginWithGoogle, logout } from "@/firebase/firebaseAuth";
@@ -17,7 +19,7 @@ export default function Navbar() {
   return user ? (
     <div>
       <button onClick={logout} className="signOut">Sign out</button>
-      <h1 className="userName">{user.displayName}</h1>
+      <h1 className="userName ">{user.displayName}</h1>
     </div>
   ) : (
     <div>
