@@ -1,11 +1,17 @@
 import db from "@/firebase/firestore";
 import { doc, deleteDoc } from "firebase/firestore";
+import { auth } from "@/firebase/clientApp";
 
 export default function DeleteItem({id, onDelete }: {id: string, onDelete: () => void}) {
+    
+    const user = auth.currentUser;
+    const uid = user?.uid;
+    
     const handleDelete = async () => {
         try {
-            await deleteDoc(doc(db, "items", id));
-            console.log("OH NO! You ran out. Maybe eat less and buy more?");
+            await deleteDoc(doc(db, "users", `${uid}/items/${id}`));
+
+            console.log("id: ", id);
         } catch (error) {
             console.error("Error deleting document: ", error);
         }

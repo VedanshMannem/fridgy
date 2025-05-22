@@ -4,13 +4,17 @@ import { useState } from "react";
 import { createWorker } from "tesseract.js";
 import db from '@/firebase/firestore';
 import { collection, addDoc } from 'firebase/firestore';
+import { auth } from '@/firebase/clientApp';
 
 
-export default function ImageUploader() {
+export default function ImageUploader({onAdd} : { onAdd: () => void }) {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string | null>("No file chosen");
   const [ocrLoading, setOcrLoading] = useState(false);
   const [ocrResult, setOcrResult] = useState<string | null>(null);
+
+  const user = auth.currentUser;
+  const uid = user?.uid;
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -52,11 +56,13 @@ export default function ImageUploader() {
       const items = ocrResult.split('\n');
       try {
         for(const item of items) {
-          const docRef = await addDoc(collection(db, "items"), {
+          const docRef = await addDoc(collection(db, `users/${uid}/items`), {
             name: item,
           });
           console.log("Document written with ID: ", docRef.id);
+          onAdd();
         }
+
       } catch (error) {
         console.log("Error adding document: ", error);
       }
@@ -77,8 +83,8 @@ export default function ImageUploader() {
         <label htmlFor="file-input" className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-md shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer">
             Choose File
         </label>
-        <div className="mb-3"/>
-        <span className="text-gray-600">{fileName}</span>
+        <div className="mt-3 mb-3"/>
+        <span className="text-gray-600 flex flex-col items-center justify-center">{fileName}</span>
       </div>
 
       {imageUrl && (

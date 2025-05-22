@@ -23,7 +23,7 @@ export async function POST(request: Request) {
     const spoonacularRes = await fetch(
       `https://api.spoonacular.com/recipes/findByIngredients?ingredients=${encodeURIComponent(
         ingredients
-      )}&number=8&ranking=1&ignorePantry=true&apiKey=${apiKey}`
+      )}&number=8&ranking=1&ignorePantry=true&instructionsRequired=true&addRecipeInstructions=true&apiKey=${apiKey}`
     );
 
     if (!spoonacularRes.ok) {

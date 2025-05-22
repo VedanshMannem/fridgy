@@ -1,15 +1,19 @@
 import db from '@/firebase/firestore';
 import { collection, getDocs } from 'firebase/firestore';
 import { useState, useEffect } from 'react';
+import { auth } from '@/firebase/clientApp';
 
 export default function GenerateRecipe() {
     const [items, setItems] = useState<any[]>([]);
     const [recipes, setRecipes] = useState<any[]>([]);
 
+    const user = auth.currentUser;
+    const uid = user?.uid;   
+
     useEffect(() => {
         const fetchItemsInList = async () => {
         try {
-            const querySnapshot = await getDocs(collection(db, "items"));
+            const querySnapshot = await getDocs(collection(db, `users/${uid}/items`));
             const itemsList: any[] = [];
             querySnapshot.forEach((doc) => {
             itemsList.push({ id: doc.id, ...doc.data() });
@@ -48,8 +52,10 @@ export default function GenerateRecipe() {
         <div className="flex flex-col">
         <button
         onClick={generateRecipe}
-        className="border bg-blue-400 p-1 rounded text-white"
-        >Generate Recipe</button>
+        className="genButton"
+        >
+            <span>Generate Recipe</span>
+        </button>
 
         <div className="mt-4 text-center w-full max-w-lg">
             {recipes.length > 0 && (

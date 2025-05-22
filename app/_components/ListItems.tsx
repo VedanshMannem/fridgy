@@ -3,15 +3,19 @@ import { useState, useEffect } from 'react';
 import db from '@/firebase/firestore';
 import { collection, getDocs } from 'firebase/firestore';
 import DeleteItem from './DeleteItem';
+import { auth } from '@/firebase/clientApp';
 
-export default function ListItems() {
+export default function ListItems({addRefresh}: {addRefresh: boolean}) {
     const [items, setItems] = useState<any[]>([]);
     const [refresh, setRefresh] = useState(false); 
+
+    const user = auth.currentUser;
+    const uid = user?.uid;
 
     useEffect(() => {
         const fetchItems = async () => {
             try {
-                const querySnapshot = await getDocs(collection(db, "items"));
+                const querySnapshot = await getDocs(collection(db, `users/${uid}/items`));
                 const itemsArray: any[] = [];
                 querySnapshot.forEach((doc) => {
                     itemsArray.push({ id: doc.id, ...doc.data() });
@@ -22,7 +26,7 @@ export default function ListItems() {
             }
         };
         fetchItems();
-    }, [refresh]);
+    }, [refresh, addRefresh]);
 
     const handleRefresh = () => {
         setRefresh(!refresh);

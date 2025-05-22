@@ -5,15 +5,26 @@ import GenerateRecipe from "./GenerateRecipe";
 import ListItems from "./ListItems";
 import WebCam from "./WebCam";
 import ReceiptUpload from "./ReceiptUpload";
+import { useState } from "react";
 
 export default function AddItemClient() {
+  const [refresh, setRefresh] = useState(false); 
+
+  const handleRefresh = () => {
+    setRefresh(!refresh);
+  };
+
   return (
     <div>
       <main>
-        <AddItem />
-        <div className="flex flex-row items-center justify-center">
+        <div
+          className="flex flex-col items-center">
+            <AddItem onAdd={handleRefresh} />
+        </div>
+        
+        <div className="flex flex-col items-center justify-center">
           <div className="w-1/2 flex flex-col items-center">
-            <ListItems />
+            <ListItems addRefresh={refresh}/>
           </div>
           <div className="flex flex-col items-center"></div>
             <GenerateRecipe /> 
@@ -30,13 +41,14 @@ export default function AddItemClient() {
         </div> */}
 
         
-
-        <div className="flex flex-col items-center justify-center mt-8 max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
-            <a>
-                <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Receipt Upload</h5>
-            </a>
-            <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">Upload your receipt and use "Run OCR" to extract the text and edit out misread items</p>
-            <ReceiptUpload />
+        <div className="flex flex-col items-center justify-center">
+          <div className="flex flex-col items-center justify-center mt-8 max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
+              <a>
+                  <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Receipt Upload</h5>
+              </a>
+              <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">Upload your receipt and use "Run OCR" to extract the text and edit out misread items</p>
+              <ReceiptUpload onAdd={handleRefresh}/>
+          </div>
         </div>
 
 

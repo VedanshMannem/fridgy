@@ -18,12 +18,12 @@ export default function Navbar() {
 
   return user ? (
     <div>
-      <button onClick={logout} className="signOut">Sign out</button>
+      <button onClick={logout} className="boton-elegante">Sign out</button>
       <h1 className="userName ">{user.displayName}</h1>
     </div>
   ) : (
     <div>
-      <button onClick={loginWithGoogle} className="signOut">Sign in with Google</button>
+      <button onClick={loginWithGoogle} className="boton-elegante">Sign in with Google</button>
       <h1 className="userName">Frigdy</h1>
     </div>
   );
