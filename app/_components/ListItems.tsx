@@ -33,12 +33,13 @@ export default function ListItems({addRefresh}: {addRefresh: boolean}) {
     }
 
     return (
-        <div className='border text-white w-96 text-center p-4'>
-            <h1 className="text-2xl font-bold mb-4">Pantry</h1>
+        <div>
+            <h1 className="flex items-center text-2xl font-bold mb-4">Pantry</h1>
             <ul>
                 {items.map((item) => (
-                    <li key={item.id} className="flex justify-between items-center border-t-2 p-2 text-white">
+                    <li key={item.id} className="flex justify-between items-center p-2 text-white">
                         {item.name}
+                        <div className='mr-20'></div>
                         <DeleteItem id={item.id} onDelete={handleRefresh} />
                     </li>
                 ))}

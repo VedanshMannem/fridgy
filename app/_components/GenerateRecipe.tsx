@@ -8,7 +8,7 @@ export default function GenerateRecipe() {
     const [recipes, setRecipes] = useState<any[]>([]);
 
     const user = auth.currentUser;
-    const uid = user?.uid;   
+    const uid = user?.uid;
 
     useEffect(() => {
         const fetchItemsInList = async () => {
@@ -19,6 +19,7 @@ export default function GenerateRecipe() {
             itemsList.push({ id: doc.id, ...doc.data() });
             });
             setItems(itemsList);
+            console.log("Items in list: ", itemsList);
         } catch (error) {
             console.error("Error fetching items: ", error);
         }
@@ -42,7 +43,7 @@ export default function GenerateRecipe() {
             )
             const data = await response.json();
             setRecipes(data);
-            console.log("Good luck cooking doofus")
+            
         } catch (error) {
             console.log("Error fetching recipes: ", error);
         }
@@ -57,12 +58,33 @@ export default function GenerateRecipe() {
             <span>Generate Recipe</span>
         </button>
 
-        <div className="mt-4 text-center w-full max-w-lg">
+        <div className="mt-4 text-center w-full max-w-lg flex items-center justify-center">
             {recipes.length > 0 && (
-            <ul className="text-white items-center">
+            <ul className="text-white items-center flex flex-wrap">
                 {recipes.map((recipe) => (
                 <li key={recipe.id}>
-                    {recipe.title}
+                    <div className='book flex flex-col items-center justify-center'>
+                    
+                    <p>Ready in: {recipe.readyInMinutes} minutes</p>
+                    <p>Servings: {recipe.servings}</p>
+                    {recipe.diets.map((diet: string) => (
+                        <span key={diet} className="text-gray-500">{diet}</span>    
+                    ))}
+            
+                    <a
+                    href={recipe.spoonacularSourceUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="linkbutton mt-4 text-center flex justify-center items-center"
+                    >
+                    See Recipe
+                    </a>
+
+                    <div className="cover flex flex-col">
+                        <p className='text-lg text-center'>{recipe.title}</p>
+                        <img src={recipe.image} alt={recipe.title} className="rounded-md w-full h-40 object-cover" />
+                    </div>
+                </div>
                 </li>
                 ))}
             </ul>

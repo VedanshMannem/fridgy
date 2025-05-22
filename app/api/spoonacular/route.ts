@@ -23,8 +23,14 @@ export async function POST(request: Request) {
     const spoonacularRes = await fetch(
       `https://api.spoonacular.com/recipes/findByIngredients?ingredients=${encodeURIComponent(
         ingredients
-      )}&number=8&ranking=1&ignorePantry=true&instructionsRequired=true&addRecipeInstructions=true&apiKey=${apiKey}`
+      )}&number=4&ranking=1&apiKey=${apiKey}`
     );
+    
+    // const spoonacularRes = await fetch(
+    //   `https://api.spoonacular.com/recipes/complexSearch?includeIngredients=${encodeURIComponent(
+    //     ingredients
+    //   )}&number=20&addRecipeInformation=true&fillIngredients=true&instructionsRequired=true&apiKey=${apiKey}`
+    // );
 
     if (!spoonacularRes.ok) {
       return NextResponse.json(
@@ -34,14 +40,22 @@ export async function POST(request: Request) {
     }
 
     const data = await spoonacularRes.json();
-    console.log("Spoonacular API response:", data);
-    // const filteredData = data.filter(
-    //   (recipe: any) => recipe.missedIngredientCount == 0
-    // );
-    // if(filteredData.length === 0) {
-    //   return NextResponse.json("", {status: 204});
-    // }
-    return NextResponse.json(data, { status: 200 });
+    let idList = ""
+
+    data.forEach((recipe: any) => {
+      idList += recipe.id + ",";
+    });
+    idList = idList.slice(0, -1);
+
+    const recipeInfo = await fetch(
+      `https://api.spoonacular.com/recipes/informationBulk?ids=${idList}&apiKey=${apiKey}`
+    )
+
+    const fullData = await recipeInfo.json();
+
+    console.log("Recipe Info: ", fullData);
+
+    return NextResponse.json(fullData, { status: 200 });
   } catch (error) {
     console.error("Error calling Spoonacular API:", error);
     return NextResponse.json(
