@@ -6,6 +6,7 @@ import ListItems from "./ListItems";
 import WebCam from "./WebCam";
 import ReceiptUpload from "./ReceiptUpload";
 import { useState } from "react";
+import ShowBookmarks from "./ShowBookmarks";
 
 export default function AddItemClient() {
   const [refresh, setRefresh] = useState(false); 
@@ -51,6 +52,9 @@ export default function AddItemClient() {
           </div>
         </div>
 
+        <div>
+          <ShowBookmarks />
+        </div>
 
         <div className="mb-8"></div>
 

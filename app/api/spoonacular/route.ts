@@ -40,7 +40,7 @@ export async function POST(request: Request) {
     }
 
     const data = await spoonacularRes.json();
-    let idList = ""
+    let idList = "";
 
     data.forEach((recipe: any) => {
       idList += recipe.id + ",";
@@ -57,10 +57,11 @@ export async function POST(request: Request) {
 
     return NextResponse.json(fullData, { status: 200 });
   } catch (error) {
-    console.error("Error calling Spoonacular API:", error);
-    return NextResponse.json(
-      { message: "Internal server error Bob ross" },
-      { status: 500 }
-    );
+      console.error("Error calling Spoonacular API:", error);
+
+      return NextResponse.json(
+        { message: "There was an error with the API. Please try this again later." },
+        { status: 500 }
+      );
   }
 }

@@ -41,4 +41,3 @@ export default function AddItem({onAdd} : { onAdd: () => void }) {
         </form>
     )
 }
-
