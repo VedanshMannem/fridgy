@@ -15,7 +15,7 @@ export default function ImageUploader({onAdd} : { onAdd: () => void }) {
   const [ocrLoading, setOcrLoading] = useState(false);
   const [ocrResult, setOcrResult] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
-  const [items, setItems] = useState<{name: string, cost: string}[]>([]);
+  const [items, setItems] = useState<{name: string, cost: string, expiry: string}[]>([]);
 
   const user = auth.currentUser;
   const uid = user?.uid;
@@ -48,10 +48,11 @@ export default function ImageUploader({onAdd} : { onAdd: () => void }) {
         const leftContext = text.slice(0, index).trim().split(/\s+/);
         const itemName = leftContext.slice(-2).join(" ");
         
-        return { name: itemName, cost: price };
+        return { name: itemName, cost: price, expiry: "" };
       });
 
       setItems(parsedItems);
+      setModalOpen(true);
 
       // const processedText = ret.data.text
       //   .replace(/[^a-zA-Z\s]/g, '')
@@ -71,14 +72,17 @@ export default function ImageUploader({onAdd} : { onAdd: () => void }) {
 
   const addItemsToPantry = async () => {
 
-    if(ocrResult) {
-      const items = ocrResult.split('\n');
+    if(items) {
+      
       try {
         for(const item of items) {
           const docRef = await addDoc(collection(db, `users/${uid}/items`), {
-            name: item,
+            name: item.name,
+            cost: item.cost,
+            expiry: item.expiry,
           });
           onAdd();
+          setModalOpen(false);
         }
 
       } catch (error) {
@@ -132,99 +136,84 @@ export default function ImageUploader({onAdd} : { onAdd: () => void }) {
               <span className="ml-2 text-sm text-gray-600">Processing...</span>
             )}
           </div>
-
-          {items && ( 
-
-            <div className="fixed inset-0 flex items-center justify-center z-50">
-              <div className="w-125 my-4 p-6 bg-gray-800 rounded-lg shadow-lg flex flex-col items-center">
-                <p className="text-lg font-bold">Here's what we extracted: </p>
-
-                <ul>                  
-                    {items.map((item)=> (
-                      <li>
-                        
-                    <textarea
-                      rows={1}
-                      className="bg-gray rounded shadow text-white resize-none overflow-hidden min-h-[2.5rem] focus:outline-none"
-                      placeholder="Something"
-                      value={item.name}
-                      onChange={(e) => {
-                        setOcrResult(e.target.value);
-                        
-                        // Auto-grow: dynamic height adjustment
-                        const el = e.target;
-                        el.style.height = "auto";              // Reset height
-                        el.style.height = `${el.scrollHeight}px`;  // Adjust to content
-                      }}
-                    />
-
-
-                        <textarea 
-                          rows={1}
-                          placeholder="Something" 
-                          value={item.cost}
-                          className="bg-gray p-4 rounded shadow text-white w-full h-40" 
-                          onChange={(e) => setOcrResult(e.target.value) }>
-                        </textarea>
-
-                        
-                      </li>
-                    ))}
-                </ul>
-
-                  {/* <form onSubmit={handleSubmit} className="my-4 flex flex-col items-center">
-                      <input 
-                      type="text" 
-                      value={value} 
-                      onChange={(e) => setValue(e.target.value)}
-                      placeholder='Item Name'
-                      className="mb-2 p-2 rounded-md border border-gray-300 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"/>
-
-                      <p className="mb-4 mt-4">
-                          Optional Info:
-                      </p>
-                      
-                      <input 
-                      type="date" 
-                      value={expiry} 
-                      onChange={(e) => setExpiry(e.target.value)}
-                      placeholder='mm/dd/yy (optional)'
-                      className=" p-2 rounded-md border border-gray-300 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"/>
-                      <p className='text-sm text-gray-600 mb-4'>Expiry Date</p>
-
-                      <input 
-                      type="text" 
-                      value={cost} 
-                      onChange={(e) => setCost(e.target.value)}
-                      placeholder='Add Item Cost'
-                      className=" p-2 rounded-md border border-gray-300 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"/>
-                      
-                      <button type="submit" className='mt-4 mb-4'>
-                          <span className="px-4 py-2 bg-green-500 text-white font-semibold rounded-md shadow-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500">
-                              Add
-                          </span>
-                      </button>
-                  </form> */}
-
-                  <button 
-                      onClick={() => setModalOpen(false)}
-                      className="px-4 py-2 bg-red-500 text-white font-semibold rounded-md shadow-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500">
-                          Cancel
-                  </button>
-              </div> 
-
-              <div className="mt-4">
-                <h3 className="text-lg font-semibold">OCR Result:</h3>
-                <textarea placeholder="Something" className="bg-gray p-4 rounded shadow text-white w-full h-40" onChange={(e) => setOcrResult(e.target.value) }></textarea>
-                <button onClick={addItemsToPantry} className="px-4 py-2 bg-green-500 text-white font-semibold rounded-md shadow-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500">
-                  Add items to pantry
-                </button>
-              </div>
-            </div>
-          )}
-          
         </>
       )}
+
+      {items && modalOpen && ( 
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
+          <div className="w-[32rem] max-w-full h-[50vh] bg-gray-800 rounded-lg shadow-lg flex flex-col p-6">
+            
+            {/* Title - fixed at top */}
+            <p className="text-lg font-bold mb-4 flex-shrink-0">Here's what we extracted:</p>
+
+            <p>
+              <span className="text-sm text-gray-400">Edit the Name to be the actual ingredient name, cost to reflect your receipt & state the expiry date if applicable</span>
+            </p>
+            
+            {/* Scrollable list - flex-grow */}
+            <ul className="flex-grow overflow-y-auto mb-4 space-y-2">
+              {items.map((item, idx) => (
+                <li key={idx} className="flex gap-2">
+                  <textarea
+                    rows={1}
+                    className="bg-gray-700 rounded shadow text-white resize-none overflow-hidden min-h-[2.5rem] flex-grow"
+                    value={item.name}
+                    onChange={(e) => {
+                      const updatedItems = items.map((i, iidx) =>
+                        iidx === idx ? { ...i, name: e.target.value } : i
+                      );
+                      setItems(updatedItems);
+                    }}
+                  />
+
+                  <textarea
+                    rows={1}
+                    className="bg-gray-700 rounded shadow text-white resize-none overflow-hidden min-h-[2.5rem] w-24"
+                    value={item.cost}
+                    onChange={(e) => {
+                      const updatedItems = items.map((i, iidx) =>
+                        iidx === idx ? { ...i, cost: e.target.value } : i
+                      );
+                      setItems(updatedItems);
+                    }}
+                  />
+
+                  <input 
+                    type="date" 
+                    value={item.expiry} 
+                    onChange={(e) => {
+                      const updatedItems = items.map((i, iidx) =>
+                        iidx === idx ? { ...i, expiry: e.target.value } : i
+                      );
+                      setItems(updatedItems);
+                    }}
+                    placeholder='mm/dd/yy (optional)'
+                    className= "p-2 rounded-md border border-gray-300 text-white focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                </li>
+              ))}
+            </ul>
+
+            {/* Button area - fixed at bottom */}
+            <div className="flex justify-between flex-shrink-0">
+              <button 
+                onClick={() => setModalOpen(false)}
+                className="px-4 py-2 bg-red-500 text-white font-semibold rounded-md shadow-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
+              >
+                Cancel
+              </button>
+
+              <button
+                onClick={addItemsToPantry}
+                className="px-4 py-2 bg-green-500 text-white font-semibold rounded-md shadow-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500"
+              >
+                Add items to pantry
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
