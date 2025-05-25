@@ -43,10 +43,8 @@ export default function ImageUploader({onAdd} : { onAdd: () => void }) {
         .join('\n'); // Join the cleaned lines back into a single string
 
       setOcrResult(processedText);
-      console.log("OCR Result: ", processedText);
       await worker.terminate();
       setOcrLoading(false);
-      console.log("Your receipt is being extracted. Is that from Walmart?")
     })();
   }
 
@@ -59,7 +57,6 @@ export default function ImageUploader({onAdd} : { onAdd: () => void }) {
           const docRef = await addDoc(collection(db, `users/${uid}/items`), {
             name: item,
           });
-          console.log("Document written with ID: ", docRef.id);
           onAdd();
         }
 
@@ -110,9 +107,8 @@ export default function ImageUploader({onAdd} : { onAdd: () => void }) {
               <span className="px-4 py-2 bg-green-500 text-white font-semibold rounded-md shadow-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500">
                 Run OCR
               </span>
-              
-
             </button>
+            
             {ocrLoading && (
               <span className="ml-2 text-sm text-gray-600">Processing...</span>
             )}

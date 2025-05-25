@@ -10,8 +10,6 @@ export default function DeleteItem({id, onDelete }: {id: string, onDelete: () =>
     const handleDelete = async () => {
         try {
             await deleteDoc(doc(db, "users", `${uid}/items/${id}`));
-
-            console.log("id: ", id);
         } catch (error) {
             console.error("Error deleting document: ", error);
         }

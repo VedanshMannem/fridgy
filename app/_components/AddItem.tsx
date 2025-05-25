@@ -11,7 +11,6 @@ export default function AddItem({onAdd} : { onAdd: () => void }) {
 
     const user = auth.currentUser;
     const uid = user?.uid;
-    console.log("User Id: ", user?.uid); 
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -20,11 +19,11 @@ export default function AddItem({onAdd} : { onAdd: () => void }) {
             const docRef = await addDoc(collection(db, `users/${uid}/items`), {
                 name: value,
             })
-            console.log("Document written with ID: ", docRef.id);
+           
             setValue("");
             onAdd();
         } catch (error) {
-            console.log("Error adding document: ", error);
+            console.error("Error adding item: ", error);
         }
     }
 

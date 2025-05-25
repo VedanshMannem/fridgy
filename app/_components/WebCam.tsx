@@ -7,10 +7,7 @@ import { useState } from 'react';
 export default function WebCam() {
     const [openWebcam, setOpenWebcam] = useState(false);
 
-    const webcamRef = useRef<Webcam>(null);
-
-    console.log("Webcam funcitonality not done yet")
-    
+    const webcamRef = useRef<Webcam>(null);    
 
     if(openWebcam) {
         return (

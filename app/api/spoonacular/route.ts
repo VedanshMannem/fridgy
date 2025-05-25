@@ -53,8 +53,6 @@ export async function POST(request: Request) {
 
     const fullData = await recipeInfo.json();
 
-    console.log("Recipe Info: ", fullData);
-
     return NextResponse.json(fullData, { status: 200 });
   } catch (error) {
       console.error("Error calling Spoonacular API:", error);

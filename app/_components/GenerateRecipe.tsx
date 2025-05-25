@@ -12,8 +12,7 @@ export default function GenerateRecipe() {
     const user = auth.currentUser;
     const uid = user?.uid;
 
-    useEffect(() => {
-        const fetchItemsInList = async () => {
+    const fetchItemsInList = async () => {
         try {
             const querySnapshot = await getDocs(collection(db, `users/${uid}/items`));
             const itemsList: any[] = [];
@@ -21,19 +20,23 @@ export default function GenerateRecipe() {
             itemsList.push({ id: doc.id, ...doc.data() });
             });
             setItems(itemsList);
-            console.log("Items in list: ", itemsList);
+            
         } catch (error) {
             console.error("Error fetching items: ", error);
         }
-        };
+    };
 
+    useEffect(() => {
         fetchItemsInList();
-    }, []);
+    }, [fetchItemsInList]);
 
     const generateRecipe = async () => {
         const ingredientsString = items.map((item) => item.name).join(",");
         try {
             setrecipeLoading(true);
+            setRecipes([]);
+            fetchItemsInList();
+
             const response = await fetch ("/api/spoonacular", {
                 method: "POST",
                 headers: {
@@ -59,7 +62,7 @@ export default function GenerateRecipe() {
                 recipeUrl: recipeUrl,
                 recipeImage: recipeImage,
             })
-            console.log("Document written with ID: ", docRef.id);
+            
         } catch (error) {
             console.log("Error adding document: ", error);
         }
@@ -113,7 +116,6 @@ export default function GenerateRecipe() {
                         <svg
                             aria-hidden="true"
                             stroke="currentColor"
-                            stroke-width="2"
                             viewBox="0 0 24 24"
                             fill="none"
                             xmlns="http://www.w3.org/2000/svg"
