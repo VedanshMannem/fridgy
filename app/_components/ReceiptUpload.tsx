@@ -5,6 +5,8 @@ import { createWorker } from "tesseract.js";
 import db from '@/firebase/firestore';
 import { collection, addDoc } from 'firebase/firestore';
 import { auth } from '@/firebase/clientApp';
+import { useEffect } from "react";
+import { getDocs } from "firebase/firestore";
 
 
 export default function ImageUploader({onAdd} : { onAdd: () => void }) {
@@ -12,6 +14,8 @@ export default function ImageUploader({onAdd} : { onAdd: () => void }) {
   const [fileName, setFileName] = useState<string | null>("No file chosen");
   const [ocrLoading, setOcrLoading] = useState(false);
   const [ocrResult, setOcrResult] = useState<string | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [items, setItems] = useState<{name: string, cost: string}[]>([]);
 
   const user = auth.currentUser;
   const uid = user?.uid;
@@ -32,17 +36,34 @@ export default function ImageUploader({onAdd} : { onAdd: () => void }) {
     (async () => {
       const worker = await createWorker('eng');
       const ret = await worker.recognize(url);
-      const processedText = ret.data.text
-        .replace(/[^a-zA-Z\s]/g, '')
-        .replace(/\b(orgnc|org|total|subtotal|tax|amount|price|total)\b/gi, '')
-        .toLowerCase()
-        .replace(/\b\w/g, (char)=> char.toUpperCase()) // Capitalize first letter of each word
-        .split('\n') // Split into lines
-        .map((line) => line.replace(/\s+/g, ' ').trim()) // Remove redundant spaces and trim each line
-        .filter((line) => line.length > 0) // Remove empty lines
-        .join('\n'); // Join the cleaned lines back into a single string
+      console.log(ret.data.text);
 
-      setOcrResult(processedText);
+      const text = ret.data.text;
+
+      const matches = [...text.matchAll(/\b\d{1,2}\.\d{2}\b/g)]
+
+      const parsedItems = matches.map(match => {
+        const price = match[0];
+        const index = match.index!;
+        const leftContext = text.slice(0, index).trim().split(/\s+/);
+        const itemName = leftContext.slice(-2).join(" ");
+        
+        return { name: itemName, cost: price };
+      });
+
+      setItems(parsedItems);
+
+      // const processedText = ret.data.text
+      //   .replace(/[^a-zA-Z\s]/g, '')
+      //   .replace(/\b(orgnc|org|total|subtotal|tax|amount|price|total)\b/gi, '')
+      //   .toLowerCase()
+      //   .replace(/\b\w/g, (char)=> char.toUpperCase()) // Capitalize first letter of each word
+      //   .split('\n') // Split into lines
+      //   .map((line) => line.replace(/\s+/g, ' ').trim()) // Remove redundant spaces and trim each line
+      //   .filter((line) => line.length > 0) // Remove empty lines
+      //   .join('\n'); // Join the cleaned lines back into a single string
+      // setOcrResult(processedText);
+
       await worker.terminate();
       setOcrLoading(false);
     })();
@@ -66,7 +87,6 @@ export default function ImageUploader({onAdd} : { onAdd: () => void }) {
     }
   }
 
-    
   const handleReset = () => {
     if (imageUrl) URL.revokeObjectURL(imageUrl);
     setImageUrl(null);
@@ -108,19 +128,98 @@ export default function ImageUploader({onAdd} : { onAdd: () => void }) {
                 Run OCR
               </span>
             </button>
-            
-            {ocrLoading && (
+              {ocrLoading && (
               <span className="ml-2 text-sm text-gray-600">Processing...</span>
             )}
           </div>
 
-          {ocrResult && (
-            <div className="mt-4">
-              <h3 className="text-lg font-semibold">OCR Result:</h3>
-              <textarea placeholder="Something" className="bg-gray p-4 rounded shadow text-white w-full h-40" value={ocrResult} onChange={(e) => setOcrResult(e.target.value) }></textarea>
-              <button onClick={addItemsToPantry} className="px-4 py-2 bg-green-500 text-white font-semibold rounded-md shadow-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500">
-                Add items to pantry
-              </button>
+          {items && ( 
+
+            <div className="fixed inset-0 flex items-center justify-center z-50">
+              <div className="w-125 my-4 p-6 bg-gray-800 rounded-lg shadow-lg flex flex-col items-center">
+                <p className="text-lg font-bold">Here's what we extracted: </p>
+
+                <ul>                  
+                    {items.map((item)=> (
+                      <li>
+                        
+                    <textarea
+                      rows={1}
+                      className="bg-gray rounded shadow text-white resize-none overflow-hidden min-h-[2.5rem] focus:outline-none"
+                      placeholder="Something"
+                      value={item.name}
+                      onChange={(e) => {
+                        setOcrResult(e.target.value);
+                        
+                        // Auto-grow: dynamic height adjustment
+                        const el = e.target;
+                        el.style.height = "auto";              // Reset height
+                        el.style.height = `${el.scrollHeight}px`;  // Adjust to content
+                      }}
+                    />
+
+
+                        <textarea 
+                          rows={1}
+                          placeholder="Something" 
+                          value={item.cost}
+                          className="bg-gray p-4 rounded shadow text-white w-full h-40" 
+                          onChange={(e) => setOcrResult(e.target.value) }>
+                        </textarea>
+
+                        
+                      </li>
+                    ))}
+                </ul>
+
+                  {/* <form onSubmit={handleSubmit} className="my-4 flex flex-col items-center">
+                      <input 
+                      type="text" 
+                      value={value} 
+                      onChange={(e) => setValue(e.target.value)}
+                      placeholder='Item Name'
+                      className="mb-2 p-2 rounded-md border border-gray-300 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+
+                      <p className="mb-4 mt-4">
+                          Optional Info:
+                      </p>
+                      
+                      <input 
+                      type="date" 
+                      value={expiry} 
+                      onChange={(e) => setExpiry(e.target.value)}
+                      placeholder='mm/dd/yy (optional)'
+                      className=" p-2 rounded-md border border-gray-300 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+                      <p className='text-sm text-gray-600 mb-4'>Expiry Date</p>
+
+                      <input 
+                      type="text" 
+                      value={cost} 
+                      onChange={(e) => setCost(e.target.value)}
+                      placeholder='Add Item Cost'
+                      className=" p-2 rounded-md border border-gray-300 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+                      
+                      <button type="submit" className='mt-4 mb-4'>
+                          <span className="px-4 py-2 bg-green-500 text-white font-semibold rounded-md shadow-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500">
+                              Add
+                          </span>
+                      </button>
+                  </form> */}
+
+                  <button 
+                      onClick={() => setModalOpen(false)}
+                      className="px-4 py-2 bg-red-500 text-white font-semibold rounded-md shadow-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500">
+                          Cancel
+                  </button>
+              </div> 
+
+              <div className="mt-4">
+                <h3 className="text-lg font-semibold">OCR Result:</h3>
+                <textarea placeholder="Something" className="bg-gray p-4 rounded shadow text-white w-full h-40" onChange={(e) => setOcrResult(e.target.value) }></textarea>
+                <button onClick={addItemsToPantry} className="px-4 py-2 bg-green-500 text-white font-semibold rounded-md shadow-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500">
+                  Add items to pantry
+                </button>
+              </div>
             </div>
           )}
           

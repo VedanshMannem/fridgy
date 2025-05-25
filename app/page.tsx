@@ -24,9 +24,6 @@ export default function Home() {
       <h1 className="flex justify-center items-center mb-4 mt-4">Never worry about cooking again</h1>
       {/* <iframe style={{border: "1px solid rgba(0, 0, 0, 0.1)"}} width="1440" height="1080" src="https://embed.figma.com/design/ZHMGGSx6u0FPjJuDv1jvym/Untitled?node-id=0-1&embed-host=share"></iframe> */}
       <div className="mt-12"></div>
-      
-      
-
 
       <div className="flex flex-wrap w-full justify-center flex-row">
         <div className="card">
@@ -60,14 +57,13 @@ export default function Home() {
           </p>
           <p>
             Import <span className="text-red-500 font-bold">YouTube</span>, 
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#ff0050] to-[#00f2ea] font-bold"> TikTok </span> , and 
-            <span className="text-pink-500 font-bold">Instagram</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#ff0050] to-[#00f2ea] font-bold"> TikTok </span>
+            , and <span className="text-pink-500 font-bold"> Instagram </span>
             recipes with a single click
           </p>
 
           <p></p>
         </div>
-
 
       </div>
     </div>
