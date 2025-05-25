@@ -93,7 +93,7 @@ export default function GenerateRecipe() {
                 {recipes.length > 0 && (
                 <ul className="text-white items-center flex flex-wrap justify-center">
                     {recipes.map((recipe) => (
-                    <li key={recipe.id}>
+                    <li key={recipe.id} className='noLineList'>
                         <div className='book flex flex-col items-center justify-center'>
                         <p>Ready in: {recipe.readyInMinutes} minutes</p>
                         <p>Servings: {recipe.servings}</p>

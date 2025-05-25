@@ -126,7 +126,7 @@ export default function ShowBookmarks() {
                                     type="text" 
                                     value={recipeUrl} 
                                     onChange={(e) => setRecipeUrl(e.target.value)}
-                                    placeholder='Recipe Link (YouTube, TikTok, etc.)'
+                                    placeholder='Recipe Link'
                                     className=" p-2 rounded-md border border-gray-300 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 />
 
@@ -134,7 +134,7 @@ export default function ShowBookmarks() {
                             
                             <p 
                                 className="text-gray-600 text-wrap mb-2 items-center text-center">
-                                    List the ingredients required separated by space, commas, or a numbered list
+                                    List the ingredients required separated by space, commas, or a numbered list.
                                     You can leave this blank but will miss out functionality.
                             </p>
 
@@ -142,7 +142,7 @@ export default function ShowBookmarks() {
                                 type="text" 
                                 value={recipeIngredients} 
                                 onChange={(e) => setRecipeIngredients(e.target.value)}
-                                placeholder='Recipe Ingrdients'
+                                placeholder='Recipe Ingredients'
                                 className=" p-2 rounded-md border border-gray-300 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
 
@@ -167,7 +167,7 @@ export default function ShowBookmarks() {
 
             <ul>
                 {importedBookmarks.map((bookmark) => (
-                    <li key={bookmark.id} className="flex justify-center p-2 text-white">
+                    <li key={bookmark.id} className="noLineListPadding flex justify-center p-2 text-white">
                         <div className="flex flex-col items-center justify-center mt-8 max-w-sm w-full p-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
                             
                             <div className="flex justify-center w-full">
@@ -206,9 +206,10 @@ export default function ShowBookmarks() {
             )}
 
             </ul>
+
             <ul>
             {bookmarks.map((bookmark) => (
-                <li key={bookmark.id} className="flex justify-center p-2 text-white">
+                <li key={bookmark.id} className="noLineListPadding flex justify-center p-2 text-white">
                 <div className="flex flex-col items-center justify-center mt-8 max-w-sm w-full p-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
                     <div className="flex flex-row items-center justify-between w-full">
                         <h5 className="text-center mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
