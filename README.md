@@ -1,36 +1,24 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Fridgy
 
-## Getting Started
+Fridgy handles all your meal planning. Just scan your grocery store receipt to import your pantry, and you can get recipes at the click of a button. 
 
-First, run the development server:
+To get started:
+1. Go to: https://fridgy-tawny.vercel.app/
+2. Sign in with Google (Firebase backend)
+3. Start using the app!
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Some cool pictures:
+<img width="1878" height="565" alt="image" src="https://github.com/user-attachments/assets/408ce3b0-3419-4a88-a16e-6a7dce7e44bb" />
+<img width="1870" height="1089" alt="image" src="https://github.com/user-attachments/assets/7e15b3d6-3b61-472f-8586-5b620fda6afb" />
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Features
+- Generate 4 recipes at a time with ingredients from your pantry
+- store prices and expiration dates of each item
+- Bookmark interesting recipes and import your own
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Coming soon ...
+- Directly import YouTube/Instagram cooking links
+- Calendar with expiration dates
+- Meal suggestions based on calories and health tracking
+- Cost analysis and breakdown
